@@ -1,0 +1,94 @@
+---
+
+# tasks for provisioning boxes with the virtualbox provider
+
+- block:
+    - name: get virtualbox version
+      command: cat /root/.vbox_version
+      changed_when: false
+      register: virtualbox_version
+
+    - name: set virtualbox guest additions path
+      set_fact:
+        vbox_guest_additions: /root/VBoxGuestAdditions_{{ virtualbox_version.stdout }}.iso
+
+    - name: ensure virtualbox guest additions iso exists
+      stat:
+        path: "{{ vbox_guest_additions }}"
+      register: vbox_guest_additions_stat
+
+    - name: fail if virtualbox guest additions iso doesn't exist
+      fail:
+        msg: virtualbox guest additions iso doesn't exist
+      when: not vbox_guest_additions_stat.stat.exists
+
+  rescue:
+    - name: set provider text
+      set_fact:
+        packer_info_provider: "Provider: VirtualBox (Guest Additions: No)"
+
+- block:
+    - name: get the current kernel release
+      command: uname -r
+      changed_when: false
+      register: kernel_release
+
+    - name: install dependencies for virtualbox guest additions
+      package:
+        name:
+          - bzip2
+          - dkms
+          - kernel-headers
+          - kernel-devel
+          - "kernel-devel-{{ kernel_release.stdout }}"
+          - gcc
+          - cpp
+          - make
+          - perl
+
+    - name: mount virtualbox guest additions iso
+      mount:
+        name: /tmp/vbox
+        src: "{{ vbox_guest_additions }}"
+        opts: loop
+        state: mounted
+        fstype: iso9660
+
+    - name: run virtualbox guest additions installer
+      command: sh /tmp/vbox/VBoxLinuxAdditions.run
+
+    - name: unmount virtualbox guest additions iso
+      mount:
+        name: /tmp/vbox
+        state: absent
+
+    - name: remove unneeded packages
+      package:
+        name:
+          - cpp
+          - kernel-headers
+          - "kernel-devel*"
+        state: absent
+
+    - name: set provider text
+      set_fact:
+        packer_info_provider: "Provider: VirtualBox (Guest Additions: Yes, Version: {{ virtualbox_version.stdout }})"
+
+  when:
+    - vbox_guest_additions_stat is defined
+    - vbox_guest_additions_stat.stat.exists
+
+- name: update /root/.packer_info
+  lineinfile:
+    path: /root/.packer_info
+    regexp: "^Provider:"
+    line: "{{ packer_info_provider }}"
+    insertbefore: "^Build Date:"
+
+- name: remove unneeded files
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ vbox_guest_additions }}"
+    - /root/.vbox_version

@@ -1,0 +1,31 @@
+---
+- hosts: all
+  gather_facts: true
+
+  vars:
+    box_name: "undefined"
+    box_version: "0.0.0"
+
+    provision_for_vagrant: true
+
+  tasks:
+
+    - name: create Packer version file
+      copy:
+        content: |
+          Build with Packer!
+          Box: {{ box_name }}
+          Box Version: {{ box_version }}
+          Build Date: {{ ansible_date_time.date }} {{ ansible_date_time.time }}
+        dest: /root/.packer_info
+        owner: root
+        group: root
+        mode: 0440
+
+    - include_tasks: "packages.yml"
+
+    - include_tasks: "vagrant.yml"
+      when: provision_for_vagrant
+
+    - include_tasks: "virtualbox.yml"
+      when: ansible_virtualization_type | lower == "virtualbox"

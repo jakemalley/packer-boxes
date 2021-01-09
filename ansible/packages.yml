@@ -1,0 +1,29 @@
+---
+
+# tasks for installing required/useful packages
+
+- name: install epel
+  package:
+    name: epel-release
+    state: latest
+  when: ansible_os_family == "RedHat"
+
+- name: upgrade all packages
+  package:
+    name: "*"
+    state: latest
+
+- name: install useful packages
+  package:
+    name:
+      - vim
+      - tmux
+      - curl
+      - wget
+      - git
+      - rsync
+      - tcpdump
+      - net-tools
+      - bind-utils
+      - nfs-utils
+    state: latest

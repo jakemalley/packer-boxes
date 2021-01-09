@@ -1,0 +1,11 @@
+---
+
+- hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+
+    - include_tasks: build-box.yml
+      loop:
+        - box_name: centos8-stream

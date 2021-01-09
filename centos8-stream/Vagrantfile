@@ -1,0 +1,19 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+
+  config.ssh.insert_key = false
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.vm.box = "file://build/virtualbox-centos8-stream.box"
+
+  config.vm.hostname = "centos8-stream.dev.local"
+
+  # Configure the VM
+  config.vm.provider "virtualbox" do |vb|
+    vb.name = "virtualbox-centos8-stream"
+    vb.gui = false
+    vb.cpus = 2
+    vb.memory = 2048
+  end
+end

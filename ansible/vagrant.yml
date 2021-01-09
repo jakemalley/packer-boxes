@@ -1,0 +1,57 @@
+---
+
+# tasks for provisioning Vagrant boxes
+
+- name: create a vagrant user
+  user:
+    name: vagrant
+    state: present
+
+- name: create vagrant's .ssh directory
+  file:
+    path: /home/vagrant/.ssh
+    state: directory
+    owner: vagrant
+    group: vagrant
+    mode: 0700
+
+- name: download vagrant's private key
+  get_url:
+    url: https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant
+    dest: /home/vagrant/.ssh/id_rsa
+    owner: vagrant
+    group: vagrant
+    mode: 0600
+
+- name: download vagrant's public key
+  get_url:
+    url: https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant.pub
+    dest: "{{ item }}"
+    owner: vagrant
+    group: vagrant
+    mode: 0600
+  loop:
+    - /home/vagrant/.ssh/id_rsa.pub
+    - /home/vagrant/.ssh/authorized_keys
+
+- name: create a sudoers.d entry for vagrant
+  copy:
+    content: |
+      vagrant ALL=(root) NOPASSWD: ALL
+    dest: /etc/sudoers.d/10_vagrant
+    owner: root
+    group: root
+    mode: 0440
+
+- name: disable firewalld
+  service:
+    name: firewalld
+    state: stopped
+    enabled: false
+  when: ansible_os_family == "RedHat"
+
+- name: put SELinux in permissive mode
+  selinux:
+    policy: targeted
+    state: permissive
+  when: ansible_os_family == "RedHat"

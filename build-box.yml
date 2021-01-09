@@ -1,0 +1,51 @@
+---
+
+# tasks for building a single box using Packer
+
+- name: set the new box version using override_box_version
+  set_fact:
+    new_box_version: "{{ item.override_box_version }}"
+  when: item.override_box_version is defined
+
+- name: use Vagrant Cloud to automatically set the box version
+  block:
+    - name: get latest box version from Vagrant Cloud
+      uri:
+        url: https://app.vagrantup.com/api/v1/box/jakemalley/{{ item.box_name }}
+        return_content: true
+      register: box_data
+
+    - name: set the current box version
+      set_fact:
+        current_box_version: "{{ (box_data.content | from_json).current_version.version }}"
+
+  rescue:
+    - name: set the current box version
+      set_fact:
+        current_box_version: "0.0.0"
+
+  always:
+    - name: set the new box version
+      set_fact:
+        new_box_version: "{{ current_box_version.split('.')[:-1] | join('.') }}.{{ current_box_version.split('.')[-1] | int + 1 }}"
+
+  when: item.override_box_version is not defined
+
+- name: output new box version
+  debug:
+    msg: "building jakemalley/{{ item.box_name }} v{{ new_box_version }}"
+
+- name: check if vars.pkrvars.hcl exists
+  stat:
+    path: "{{ item.box_name }}/vars.pkrvars.hcl"
+  register: stat_vars
+
+- name: build using Packer
+  command: >
+    packer build
+    {{ '-var-file=vars.pkrvars.hcl' if stat_vars.stat.exists }}
+    -var 'box_name={{ item.box_name }}'
+    -var 'box_version={{ new_box_version }}'
+    packer/
+  args:
+    chdir: "{{ item.box_name }}"
