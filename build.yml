@@ -4,8 +4,16 @@
   connection: local
   gather_facts: false
 
+  vars:
+    parallel_builds: 4
+    boxes:
+      - box_name: centos8-stream
+      - box_name: centos8
+      - box_name: centos7
+
   tasks:
 
-    - include_tasks: build-box.yml
-      loop:
-        - box_name: centos8-stream
+    - include_tasks: build-batch.yml
+      loop: "{{ boxes | batch(parallel_builds) | list}}"
+      loop_control:
+        loop_var: "batch_item"

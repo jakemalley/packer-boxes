@@ -1,0 +1,22 @@
+---
+
+# tasks file for a batch of builds
+
+- name: initialise batch_async_result for new batch
+  set_fact:
+    batch_async_result: []
+
+- name: call build box
+  include_tasks: build-box.yml
+  loop: "{{ batch_item }}"
+
+- name: wait for builds in batch to complete
+  async_status:
+    jid: "{{ async_result.ansible_job_id }}"
+  loop: "{{ batch_async_result }}"
+  loop_control:
+    loop_var: "async_result"
+  register: async_poll_results
+  until: async_poll_results.finished
+  retries: "{{ packer_async_poll_retries | default(100) }}"
+  delay: 60

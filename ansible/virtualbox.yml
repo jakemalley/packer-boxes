@@ -62,6 +62,12 @@
         name: /tmp/vbox
         state: absent
 
+    - name: run /sbin/rcvboxadd setup on RHEL 7
+      command: /sbin/rcvboxadd setup
+      when:
+        - ansible_os_family == "RedHat"
+        - ansible_distribution_major_version == "7"
+
     - name: remove unneeded packages
       package:
         name:

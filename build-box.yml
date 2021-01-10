@@ -40,7 +40,7 @@
     path: "{{ item.box_name }}/vars.pkrvars.hcl"
   register: stat_vars
 
-- name: build using Packer
+- name: build using Packer (async)
   command: >
     packer build
     {{ '-var-file=vars.pkrvars.hcl' if stat_vars.stat.exists }}
@@ -49,3 +49,10 @@
     packer/
   args:
     chdir: "{{ item.box_name }}"
+  async: "{{ packer_async_build_timeout | default(3600) }}"
+  poll: 0
+  register: async_results
+
+- name: update batch_async_result
+  set_fact:
+    batch_async_result: "{{ batch_async_result + [{'box_name': item.box_name, 'ansible_job_id': async_results.ansible_job_id}] }}"
