@@ -36,10 +36,12 @@ test -f /var/log/grubby && /bin/cat /dev/null > /var/log/grubby
 /bin/rm -f /var/log/dmesg.old
 /bin/rm -f /var/log/*-????????
 /bin/rm -f /var/log/*.gz
+/bin/rm -f /var/log/vboxadd-*
 
 /bin/rm -rf /var/log/anaconda
 /bin/rm -rf /root/.ssh
 /bin/rm -f /root/anaconda-ks.cfg
+/bin/rm -f /root/anaconda-ks.post.log
 /bin/rm -f /root/original-ks.cfg
 /bin/rm -f /root/.bash_history
 
