@@ -46,16 +46,24 @@ build {
         script = "${path.root}/scripts/template.sh"
     }
 
-    # create Vagrant box
-    post-processor "vagrant" {
-        output = "${path.cwd}/build/{{.Provider}}-${var.box_name}.box"
+    post-processors {
+        # create Vagrant box
+        post-processor "vagrant" {
+            output = "${path.cwd}/build/{{.Provider}}-${var.box_name}-${var.box_version}.box"
+        }
+
+        # upload to Vagrant cloud
+        post-processor "vagrant-cloud" {
+            box_tag = "jakemalley/${var.box_name}"
+            version = "${var.box_version}"
+        }
     }
 }
 
 source "virtualbox-iso" "packer-centos-virtualbox" {
 
     # VM
-    vm_name       = "packer-${var.box_name}-x86_64"
+    vm_name       = "packer-${var.box_name}-${var.box_version}-x86_64"
     headless      = true
     disk_size     = 61440
     guest_os_type = "RedHat_64"

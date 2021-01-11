@@ -3,3 +3,4 @@ iso/
 packer_cache/
 *.box
 .vagrant
+output-*
