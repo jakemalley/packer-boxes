@@ -8,8 +8,11 @@
     parallel_builds: 4
     boxes:
       - box_name: centos8-stream
+        box_vars: virtualbox.pkrvars.hcl
       - box_name: centos8
+        box_vars: virtualbox.pkrvars.hcl
       - box_name: centos7
+        box_vars: virtualbox.pkrvars.hcl
 
   tasks:
 

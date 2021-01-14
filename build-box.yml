@@ -35,15 +35,21 @@
   debug:
     msg: "building jakemalley/{{ item.box_name }} v{{ new_box_version }}"
 
-- name: check if vars.pkrvars.hcl exists
+- name: check if {{ item.box_vars | default('vars.pkrvars.hcl') }} exists
   stat:
-    path: "{{ item.box_name }}/vars.pkrvars.hcl"
+    path: "{{ item.box_name }}/{{ item.box_vars | default('vars.pkrvars.hcl') }}"
   register: stat_vars
+
+- name: check if secret.pkrvars.hcl exists
+  stat:
+    path: "{{ item.box_name }}/secret.pkrvars.hcl"
+  register: stat_secret_vars
 
 - name: build using Packer (async)
   command: >
     packer build
-    {{ '-var-file=vars.pkrvars.hcl' if stat_vars.stat.exists }}
+    {{ '-var-file='+item.box_vars | default('-var-file=vars.pkrvars.hcl') if stat_vars.stat.exists }}
+    {{ '-var-file=secret.pkrvars.hcl' if stat_secret_vars.stat.exists }}
     -var 'box_name={{ item.box_name }}'
     -var 'box_version={{ new_box_version }}'
     packer/
