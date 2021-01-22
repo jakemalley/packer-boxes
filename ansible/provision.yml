@@ -6,8 +6,6 @@
     box_name: "undefined"
     box_version: "0.0.0"
 
-    provision_for_vagrant: true
-
   tasks:
 
     - name: create Packer version file
@@ -25,7 +23,7 @@
     - include_tasks: "packages.yml"
 
     - include_tasks: "vagrant.yml"
-      when: provision_for_vagrant
+      when: ansible_virtualization_type | lower == "virtualbox"
 
     - include_tasks: "virtualbox.yml"
       when: ansible_virtualization_type | lower == "virtualbox"
