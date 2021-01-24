@@ -37,10 +37,11 @@
       package:
         name:
           - bzip2
-          - dkms
+          - tar
           - kernel-headers
           - kernel-devel
           - "kernel-devel-{{ kernel_release.stdout }}"
+          - elfutils-libelf-devel
           - gcc
           - cpp
           - make
@@ -95,5 +96,5 @@
     path: "{{ item }}"
     state: absent
   loop:
-    - "{{ vbox_guest_additions }}"
+    - "{{ vbox_guest_additions | default(omit) }}"
     - /root/.vbox_version

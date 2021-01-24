@@ -8,21 +8,26 @@ variable "box_version" {
     type = string
 }
 
-variable "boot_iso_url" {
+variable "iso_url" {
     type = string
 }
 
-variable "boot_iso_checksum" {
-    type = string
-}
-
-variable "installation_repo" {
+variable "iso_checksum" {
     type = string
 }
 
 variable "vm_guest_os_type" {
     type    = string
     default = "RedHat_64"
+}
+
+# RedHat Options
+variable "redhat_org_id" {
+    type = string
+}
+
+variable "redhat_activation_key" {
+    type = string
 }
 
 # VMware vSphere Options Only
