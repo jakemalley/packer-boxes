@@ -2,13 +2,19 @@
 
 # tasks for installing required/useful packages
 
-- name: install epel
-  package:
-    name: epel-release
-    state: latest
+- block:
+    - name: import epel gpg key
+      rpm_key:
+        key: "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}"
+        state: present
+
+    - name: install epel repo
+      yum:
+        name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
+        state: present
+
   when:
     - ansible_os_family == "RedHat"
-    - ansible_distribution != "RedHat"
 
 - name: upgrade all packages
   package:
