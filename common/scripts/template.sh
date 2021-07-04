@@ -13,8 +13,8 @@ unset HISTFILE
 test -x /bin/package-cleanup && /bin/package-cleanup -y --oldkernels --count=1
 test -x /bin/dnf && /bin/dnf -y remove --oldinstallonly --setopt installonly_limit=1
 
-/usr/sbin/subscription-manager unregister
-/usr/sbin/subscription-manager clean
+test -x /usr/sbin/subscription-manager && /usr/sbin/subscription-manager unregister
+test -x /usr/sbin/subscription-manager && /usr/sbin/subscription-manager clean
 
 /usr/bin/yum clean all
 /bin/rm -rf /var/cache/yum

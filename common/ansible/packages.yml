@@ -15,6 +15,7 @@
 
   when:
     - ansible_os_family == "RedHat"
+    - ansible_virtualization_type | lower == "virtualbox" or install_epel | default(false)
 
 - name: upgrade all packages
   package:

@@ -21,31 +21,31 @@ build {
     # install ansible
     provisioner "shell" {
         start_retry_timeout = "5m"
-        script = "${path.root}/scripts/ansible.sh"
+        script = "${path.root}/../common/scripts/ansible.sh"
     }
 
     # provision
     provisioner "ansible-local" {
-        playbook_file   = "${path.cwd}/../ansible/provision.yml"
-        playbook_dir    = "${path.cwd}/../ansible"
+        playbook_file   = "${path.root}/../common/ansible/provision.yml"
+        playbook_dir    = "${path.root}/../common/ansible"
         extra_arguments = [ "--extra-vars", "'{\"box_name\":\"${var.box_name}\", \"box_version\":\"${var.box_version}\"}'" ]
     }
 
     # remove ansible
     provisioner "shell" {
-        script = "${path.root}/scripts/remove.sh"
+        script = "${path.root}/../common/scripts/remove.sh"
     }
 
     # cleanup image
     provisioner "shell" {
-        script = "${path.root}/scripts/template.sh"
+        script = "${path.root}/../common/scripts/template.sh"
     }
 
     post-processors {
         # create Vagrant box (Only for VirtualBox)
         post-processor "vagrant" {
             only   = ["source.virtualbox-iso.packer-rhel-iso"]
-            output = "${path.cwd}/build/{{.Provider}}-${var.box_name}.box"
+            output = "${path.root}/build/{{.Provider}}-${var.box_name}.box"
         }
     }
 }
