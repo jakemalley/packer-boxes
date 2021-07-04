@@ -21,24 +21,24 @@ build {
     # install ansible
     provisioner "shell" {
         start_retry_timeout = "5m"
-        script = "${path.root}/../common/scripts/ansible.sh"
+        script = "${path.cwd}/../common/scripts/ansible.sh"
     }
 
     # provision
     provisioner "ansible-local" {
-        playbook_file   = "${path.root}/../common/ansible/provision.yml"
-        playbook_dir    = "${path.root}/../common/ansible"
+        playbook_file   = "${path.cwd}/../common/ansible/provision.yml"
+        playbook_dir    = "${path.cwd}/../common/ansible"
         extra_arguments = [ "--extra-vars", "'{\"box_name\":\"${var.box_name}\", \"box_version\":\"${var.box_version}\"}'" ]
     }
 
     # remove ansible
     provisioner "shell" {
-        script = "${path.root}/../common/scripts/remove.sh"
+        script = "${path.cwd}/../common/scripts/remove.sh"
     }
 
     # cleanup image
     provisioner "shell" {
-        script = "${path.root}/../common/scripts/template.sh"
+        script = "${path.cwd}/../common/scripts/template.sh"
     }
 
     post-processors {
