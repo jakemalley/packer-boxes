@@ -1,7 +1,7 @@
 
 # General Options
-iso_url      = "iso/rhel-8.3-x86_64-dvd.iso"
-iso_checksum = "sha256:30fd8dff2d29a384bd97886fa826fa5be872213c81e853eae3f9d9674f720ad0"
+iso_url      = "iso/rhel-8.4-x86_64-dvd.iso"
+iso_checksum = "sha256:48f955712454c32718dcde858dea5aca574376a1d7a4b0ed6908ac0b85597811"
 
 # RedHat Options
 redhat_org_id = "ORG"
