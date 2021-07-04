@@ -57,7 +57,7 @@ source "virtualbox-iso" "packer-rhel-iso" {
     vm_name       = "packer-${var.box_name}-${var.box_version}-x86_64"
     headless      = true
     disk_size     = 61440
-    guest_os_type = "RedHat_64"
+    guest_os_type = "${var.vm_guest_os_type}"
     vboxmanage    = [
         [ "modifyvm", "{{.Name}}", "--memory", "2048" ],
         [ "modifyvm", "{{.Name}}", "--cpus", "2" ]
@@ -106,9 +106,9 @@ source "vsphere-iso" "packer-rhel-iso" {
 
     # VM
     vm_name              = "packer-${var.box_name}-${var.box_version}-x86_64"
-    guest_os_type        = "rhel7_64Guest"
+    guest_os_type        = "${var.vm_guest_os_type}"
     CPUs                 = 2
-    CPU_hot_plug         = true
+    CPU_hot_plug         = false
     RAM                  = 2048
     RAM_hot_plug         = true
     RAM_reserve_all      = false
