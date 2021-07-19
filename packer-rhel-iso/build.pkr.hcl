@@ -44,7 +44,7 @@ build {
     post-processors {
         # create Vagrant box (Only for VirtualBox)
         post-processor "vagrant" {
-            only   = ["source.virtualbox-iso.packer-rhel-iso"]
+            only   = ["virtualbox-iso.packer-rhel-iso"]
             output = "${path.root}/build/{{.Provider}}-${var.box_name}.box"
         }
     }

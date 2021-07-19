@@ -4,6 +4,7 @@ set -ux
 
 unset HISTFILE
 
+/usr/sbin/setenforce 0
 /usr/bin/systemctl stop rsyslog
 /usr/bin/systemctl stop auditd
 /usr/bin/systemctl disable --now kdump
@@ -11,7 +12,7 @@ unset HISTFILE
 /sbin/logrotate -f /etc/logrotate.conf
 
 test -x /bin/package-cleanup && /bin/package-cleanup -y --oldkernels --count=1
-test -x /bin/dnf && /bin/dnf -y remove --oldinstallonly --setopt installonly_limit=1
+test -x /bin/dnf && /bin/dnf -y remove --oldinstallonly --setopt installonly_limit=2
 
 test -x /usr/sbin/subscription-manager && /usr/sbin/subscription-manager unregister
 test -x /usr/sbin/subscription-manager && /usr/sbin/subscription-manager clean

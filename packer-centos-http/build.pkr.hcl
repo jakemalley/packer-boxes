@@ -32,13 +32,13 @@ build {
     post-processors {
         # create Vagrant box (Only for VirtualBox)
         post-processor "vagrant" {
-            only   = ["source.virtualbox-iso.packer-centos-virtualbox"]
+            only   = ["virtualbox-iso.packer-centos-virtualbox"]
             output = "${path.cwd}/build/{{.Provider}}-${var.box_name}.box"
         }
 
         # upload to Vagrant cloud (Only for VirtualBox)
         post-processor "vagrant-cloud" {
-            only    = ["source.virtualbox-iso.packer-centos-virtualbox"]
+            only    = ["virtualbox-iso.packer-centos-virtualbox"]
             box_tag = "jakemalley/${var.box_name}"
             version = "${var.box_version}"
         }
