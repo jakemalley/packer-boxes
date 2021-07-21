@@ -52,6 +52,7 @@
     {{ '-var-file=secret.pkrvars.hcl' if stat_secret_vars.stat.exists }}
     -var 'box_name={{ item.box_name }}'
     -var 'box_version={{ new_box_version }}'
+    {% if item.only is defined %}-only '{{ item.only }}'{% endif %}
     packer/
   args:
     chdir: "{{ item.box_name }}"
