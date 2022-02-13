@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # install Ansible for provisioning
+export BASH_XTRACEFD=1
 set -eux
 
 yum -y install python3 python3-pip
-pip3 install --upgrade pip
-pip3 install ansible
+python3 -m pip install --upgrade pip
+python3 -m pip install ansible

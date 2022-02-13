@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # cleanup image for template creation
+export BASH_XTRACEFD=1
 set -ux
 
 unset HISTFILE
